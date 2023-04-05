@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist/common';
+import { ResponseResult } from 'src/utils/ResponseResult';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,16 +15,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const res = await this.usersRepository.save(createUserDto);
-
-    console.log(res);
-
-    if (res) {
-      return {
-        status: 200,
-        message: 'success',
-        data: res,
-      };
-    }
+    return ResponseResult.success(res);
   }
 
   findAll() {

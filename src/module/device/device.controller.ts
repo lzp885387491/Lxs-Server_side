@@ -14,7 +14,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import e from 'express';
 import { ResponseResult } from 'src/utils/ResponseResult';
 import { DeviceService } from './device.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
@@ -30,13 +29,30 @@ export class DeviceController {
   @Post('create')
   @ApiOperation({ summary: '添加一个设备' })
   async create(@Body() createDeviceDto: CreateDeviceDto) {
-    const { deviceName } = createDeviceDto;
+    const {
+      deviceName,
+      deviceType,
+      deviceManufacturer,
+      deviceStatus,
+      deviceLocation,
+      deviceAdministrator,
+    } = createDeviceDto;
     if (!deviceName || deviceName == '') {
       throw new BadRequestException('设备名称不能为空！');
-    } else {
-      const data = this.deviceService.create(createDeviceDto);
-      return ResponseResult.success(data);
+    } else if (!deviceType || deviceType == '') {
+      throw new BadRequestException('设备类型不能为空！');
+    } else if (!deviceManufacturer || deviceManufacturer == '') {
+      throw new BadRequestException('设备厂商不能为空！');
+    } else if (!deviceStatus || deviceStatus == '') {
+      throw new BadRequestException('设备状态不能为空！');
+    } else if (!deviceLocation || deviceLocation == '') {
+      throw new BadRequestException('设备位置不能为空！');
+    } else if (!deviceAdministrator || deviceAdministrator == '') {
+      throw new BadRequestException('管理员不能为空！');
     }
+
+    const data = this.deviceService.create(createDeviceDto);
+    return ResponseResult.success(data);
   }
 
   @Get('list')
@@ -47,7 +63,7 @@ export class DeviceController {
     return ResponseResult.success(data);
   }
 
-  @Get(':id')
+  @Post(':id')
   findOne(@Param('id') id: string) {
     return this.deviceService.findOne(+id);
   }
